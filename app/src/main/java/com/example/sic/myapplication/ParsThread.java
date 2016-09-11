@@ -1,6 +1,8 @@
 package com.example.sic.myapplication;
 
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,9 +17,10 @@ import java.util.ArrayList;
  */
 class ParsThread extends AsyncTask<Integer, Void, ArrayList<NewsItem>> {
     RecycleViewListAdapter adapter;
-
-    public ParsThread(RecycleViewListAdapter adapter) {
+    ProgressBar progressBar;
+    public ParsThread(RecycleViewListAdapter adapter, ProgressBar progressBar) {
         this.adapter = adapter;
+        this.progressBar=progressBar;
     }
 
     @Override
@@ -46,5 +49,6 @@ class ParsThread extends AsyncTask<Integer, Void, ArrayList<NewsItem>> {
     @Override
     protected void onPostExecute(ArrayList<NewsItem> result) {
         adapter.addAll(result);
+        progressBar.setVisibility(View.GONE);
     }
 }

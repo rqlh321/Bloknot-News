@@ -43,25 +43,13 @@ public class RecycleViewListAdapter extends RecyclerView.Adapter<RecycleViewList
         return list.size();
     }
 
-    public void refreshList(ArrayList<NewsItem> newList) {
-        list = newList;
-        notifyDataSetChanged();
-    }
-
     public void addAll(ArrayList<NewsItem> newList) {
         list.addAll(newList);
         notifyDataSetChanged();
     }
 
-
-    public void add(NewsItem item) {
-        list.add(0, item);
-        notifyDataSetChanged();
-    }
-
-    public void clear() {
-        list.clear();
-        notifyDataSetChanged();
+    public ArrayList<NewsItem> getList() {
+        return list;
     }
 
     public boolean contains(String title) {
