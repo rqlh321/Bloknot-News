@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by sic on 09.09.2016.
  */
-class ParsThread extends AsyncTask<Integer, Void, ArrayList<NewsItem>> {
+public class ParsThread extends AsyncTask<Integer, Void, ArrayList<NewsItem>> {
     RecycleViewListAdapter adapter;
     ProgressBar progressBar;
     public ParsThread(RecycleViewListAdapter adapter, ProgressBar progressBar) {

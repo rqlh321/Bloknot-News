@@ -1,4 +1,4 @@
-package com.example.sic.myapplication;
+package com.example.sic.myapplication.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import com.example.sic.myapplication.EndlessRecyclerOnScrollListener;
+import com.example.sic.myapplication.NewsItem;
+import com.example.sic.myapplication.ParsThread;
+import com.example.sic.myapplication.R;
+import com.example.sic.myapplication.RecycleViewListAdapter;
 
 import java.util.ArrayList;
 
