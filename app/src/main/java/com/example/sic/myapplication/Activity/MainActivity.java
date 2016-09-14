@@ -1,16 +1,22 @@
 package com.example.sic.myapplication.Activity;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.sic.myapplication.EndlessRecyclerOnScrollListener;
 import com.example.sic.myapplication.NewsItem;
 import com.example.sic.myapplication.R;
 import com.example.sic.myapplication.RecycleViewListAdapter;
+import com.example.sic.myapplication.ServiceManager;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,9 +36,11 @@ public class MainActivity extends Activity {
     private final String SAVED_ITEMS = "saved";
     private final String NEWS = "news";
     private final String CURRENT_PAGE = "current_page";
-    int currentPage = 1;
-    private RecycleViewListAdapter adapter;
-    private ProgressBar progressBar;
+    private ServiceManager serviceManager;
+    private CollapsingToolbarLayout mainActivityView;
+    private static int currentPage = 1;
+    private static RecycleViewListAdapter adapter;
+    private static ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         progressBar = (ProgressBar) findViewById(R.id.loading);
+        mainActivityView = (CollapsingToolbarLayout) findViewById(R.id.main_activity_view);
+        serviceManager = new ServiceManager(this);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.news_list);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -49,9 +59,11 @@ public class MainActivity extends Activity {
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore() {
-                getNews(currentPage);
+                if (!serviceManager.isNetworkAvailable()) {
+                    connectionLost();
+                }
+                getNews();
                 currentPage++;
-                progressBar.setVisibility(View.VISIBLE);
             }
         });
         if (savedInstanceState != null) {
@@ -62,7 +74,7 @@ public class MainActivity extends Activity {
             adapter.addAll(news);
         } else {
             currentPage = 1;
-            getNews(currentPage);
+            getNews();
             currentPage++;
         }
     }
@@ -76,8 +88,25 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
     }
 
-    private void getNews(int page) {
-        Observable.just(page)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!serviceManager.isNetworkAvailable()) {
+            connectionLost();
+        }
+    }
+
+    private void connectionLost() {
+        Snackbar snackbar = Snackbar.make(mainActivityView, "No internet connection!", Snackbar.LENGTH_LONG);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
+
+    public static void getNews() {
+        progressBar.setVisibility(View.VISIBLE);
+        Observable.just(currentPage)
                 .map(new Func1<Integer, ArrayList<NewsItem>>() {
                     @Override
                     public ArrayList<NewsItem> call(Integer integer) {
