@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.sic.myapplication.Activity.MainActivity;
+import com.example.sic.myapplication.activity.MainActivity;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
     String TAG = "NetworkChangeReceiver";

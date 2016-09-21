@@ -1,7 +1,6 @@
-package com.example.sic.myapplication.Activity;
+package com.example.sic.myapplication.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -90,6 +89,7 @@ public class MainActivity extends Activity {
                     public void onNext(ArrayList<NewsItem> newsItems) {
                         adapter.addAll(newsItems);
                         progressBar.setVisibility(View.GONE);
+                        currentPage++;
                     }
                 });
     }
@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        registerReceiver(networkChangeReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         progressBar = (ProgressBar) findViewById(R.id.loading);
         mainActivityView = (CollapsingToolbarLayout) findViewById(R.id.main_activity_view);
         serviceManager = new ServiceManager(this);
@@ -115,8 +115,9 @@ public class MainActivity extends Activity {
                 if (!serviceManager.isNetworkAvailable()) {
                     connectionLost();
                 }
-                getNews();
-                currentPage++;
+                if (currentPage > 1) {
+                    getNews();
+                }
             }
         });
         if (savedInstanceState != null) {
@@ -125,10 +126,6 @@ public class MainActivity extends Activity {
             currentPage = bundle.getInt(CURRENT_PAGE);
             ArrayList<NewsItem> news = bundle.getParcelableArrayList(NEWS);
             adapter.addAll(news);
-        } else {
-            currentPage = 1;
-            getNews();
-            currentPage++;
         }
     }
 
